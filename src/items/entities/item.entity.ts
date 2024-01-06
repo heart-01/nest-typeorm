@@ -1,4 +1,7 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Listing } from './listing.entity';
+import { Comment } from './comment.entity';
+import { Tag } from './tag.entity';
 
 @Entity()
 export class Item {
@@ -10,6 +13,19 @@ export class Item {
 
   @Column({ default: true })
   public: boolean;
+
+  @OneToOne(() => Listing, { cascade: true })
+  @JoinColumn()
+  listing: Listing;
+
+  // virtual property
+  @OneToMany(() => Comment, (comment) => comment.item, { cascade: true })
+  comments: Comment[];
+
+  // table name is item_tags_tag
+  @ManyToMany(() => Tag, { cascade: true })
+  @JoinTable()
+  tags: Tag[];
 
   @CreateDateColumn()
   created: Date;
